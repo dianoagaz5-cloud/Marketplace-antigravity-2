@@ -51,38 +51,38 @@
 }
 
 .dark {
-  /* ─── DARK PALETTE ─── */
-  --background:   220 20% 8%;       /* deep charcoal #0D0F14 */
-  --foreground:   220 14% 96%;      /* near-white */
+  /* ─── DARK PALETTE — noir uniforme ─── */
+  --background:   0 0% 0%;       /* #000000 */
+  --foreground:   0 0% 96%;      /* near-white #F5F5F5 */
 
-  --card:         220 18% 11%;      /* #141720 */
-  --card-foreground: 220 14% 96%;
+  --card:         0 0% 3%;       /* #080808 */
+  --card-foreground: 0 0% 96%;
 
-  --surface:      220 16% 14%;
+  --surface:      0 0% 5%;       /* #0D0D0D */
 
-  --primary:      258 80% 65%;      /* lighter violet in dark */
+  --primary:      258 75% 62%;   /* violet clair */
   --primary-foreground: 0 0% 100%;
-  --primary-hover: 258 80% 58%;
+  --primary-hover: 258 75% 55%;
 
-  --accent:       35 90% 58%;
+  --accent:       38 90% 55%;
   --accent-foreground: 30 40% 10%;
 
-  --muted:        220 16% 16%;
-  --muted-foreground: 220 10% 55%;
+  --muted:        0 0% 6%;       /* #0F0F0F */
+  --muted-foreground: 0 0% 45%;  /* gris texte secondaire */
 
-  --border:       220 16% 18%;
-  --border-light: 220 16% 22%;
+  --border:       0 0% 10%;      /* #1A1A1A */
+  --border-light: 0 0% 12%;      /* #1F1F1F */
 
   --success:      154 60% 48%;
   --warning:      38 90% 58%;
   --danger:       0 72% 60%;
 
-  --ring:         258 80% 65%;
+  --ring:         258 75% 62%;
 
-  --shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.3);
-  --shadow:     0 4px 12px -2px rgb(0 0 0 / 0.4), 0 2px 6px -2px rgb(0 0 0 / 0.2);
-  --shadow-md:  0 8px 24px -4px rgb(0 0 0 / 0.5), 0 4px 10px -4px rgb(0 0 0 / 0.3);
-  --shadow-lg:  0 20px 40px -8px rgb(0 0 0 / 0.6), 0 8px 16px -8px rgb(0 0 0 / 0.4);
+  --shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.5);
+  --shadow:     0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.3);
+  --shadow-md:  0 8px 24px -4px rgb(0 0 0 / 0.6), 0 4px 10px -4px rgb(0 0 0 / 0.4);
+  --shadow-lg:  0 20px 40px -8px rgb(0 0 0 / 0.7), 0 8px 16px -8px rgb(0 0 0 / 0.5);
 }
 
 /* ─── BASE ─── */

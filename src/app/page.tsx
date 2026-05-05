@@ -83,12 +83,12 @@ function ProductCard({ item }: { item: typeof PRODUCTS[0] }) {
 ──────────────────────────────── */
 function SectionHeader({ title, subtitle, href, linkText }: { title: string; subtitle?: string; href: string; linkText: string }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2rem" }}>
-      <div>
+    <div className="section-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2rem", gap: "1rem", flexWrap: "wrap" }}>
+      <div style={{ minWidth: 0 }}>
         <h2 style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.2 }}>{title}</h2>
         {subtitle && <p style={{ color: "hsl(var(--muted-foreground))", marginTop: "0.375rem", fontSize: "0.925rem" }}>{subtitle}</p>}
       </div>
-              <Link href={href} style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.875rem", fontWeight: 700, color: "hsl(var(--primary))", flexShrink: 0, paddingBottom: subtitle ? "0.125rem" : 0 }}>
+      <Link href={href} style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.875rem", fontWeight: 700, color: "hsl(var(--primary))", flexShrink: 0, paddingBottom: subtitle ? "0.125rem" : 0, whiteSpace: "nowrap" }}>
         {linkText} <ArrowRight size={16} />
       </Link>
     </div>
@@ -123,7 +123,7 @@ export default function Home() {
         <div style={{ position: "absolute", top: "-120px", right: "-80px", width: "520px", height: "520px", borderRadius: "50%", background: "radial-gradient(circle, hsl(258 72% 52% / 0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "360px", height: "360px", borderRadius: "50%", background: "radial-gradient(circle, hsl(35 95% 55% / 0.10) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "4rem 2rem", width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
+        <div className="hero-grid" style={{ maxWidth: "1240px", margin: "0 auto", padding: "4rem 2rem", width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
           <motion.div initial="hidden" animate="show" variants={stagger}>
             <motion.div variants={fadeUp}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.35rem 0.875rem", borderRadius: "var(--radius-full)", background: "hsl(var(--primary) / 0.1)", color: "hsl(var(--primary))", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "0.02em", marginBottom: "1.75rem" }}>
@@ -161,7 +161,7 @@ export default function Home() {
             </motion.div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0, transition: { duration: 0.6, delay: 0.2 } }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", position: "relative" }}>
+          <motion.div className="hero-cards" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0, transition: { duration: 0.6, delay: 0.2 } }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", position: "relative" }}>
             {PRODUCTS.slice(0, 4).map((p, i) => (
               <Link key={p.id} href={`/produit/${p.id}`} style={{ textDecoration: "none", transform: i % 2 === 1 ? "translateY(1.5rem)" : "none" }}>
                 <div style={{ background: "hsl(var(--card))", borderRadius: "var(--radius-lg)", border: "1px solid hsl(var(--border))", overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
@@ -178,7 +178,7 @@ export default function Home() {
 
       {/* ══════════════════ STATS ══════════════════ */}
       <section style={{ borderTop: "1px solid hsl(var(--border))", borderBottom: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }}>
-        <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "2.5rem 2rem", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2rem" }}>
+        <div className="stats-grid" style={{ maxWidth: "1240px", margin: "0 auto", padding: "2.5rem 2rem", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2rem" }}>
           {STATS.map((s, i) => (
             <motion.div
               key={s.label}
@@ -196,11 +196,12 @@ export default function Home() {
       </section>
 
       {/* ══════════════════ PRODUCTS ══════════════════ */}
-      <section style={{ maxWidth: "1240px", margin: "0 auto", padding: "5rem 2rem" }}>
+      <section style={{ maxWidth: "1240px", margin: "0 auto", padding: "5rem 2rem" }} className="products-section">
         <SectionHeader title="Tendances du moment" subtitle="Les produits les plus appréciés cette semaine" href="/boutique" linkText="Tout voir" />
         <motion.div
           initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
+          className="products-grid"
           style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.5rem" }}
         >
           {PRODUCTS.map(p => (
@@ -284,6 +285,40 @@ export default function Home() {
           color: hsl(0 72% 51%);
           background: hsl(var(--card));
           border-color: hsl(0 72% 51% / 0.2);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            padding: 2rem 1rem !important;
+            gap: 2rem !important;
+          }
+          .hero-cards {
+            display: none !important;
+          }
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            padding: 2rem 1rem !important;
+            gap: 1.5rem !important;
+          }
+          .section-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+          }
+          .products-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .stats-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem !important;
+          }
+          .products-grid {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
     </>

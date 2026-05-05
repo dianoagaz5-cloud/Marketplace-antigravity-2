@@ -19,7 +19,7 @@ export default function Footer() {
   return (
     <footer style={{ backgroundColor: "hsl(var(--card))", borderTop: "1px solid hsl(var(--border) / 0.6)", marginTop: "auto" }}>
       <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "4rem 2rem 2rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "3rem", marginBottom: "4rem" }}>
+        <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "3rem", marginBottom: "4rem" }}>
           <div>
             <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none", marginBottom: "1rem" }}>
               <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "linear-gradient(135deg, hsl(var(--primary)), hsl(258 72% 38%))", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: "1rem" }}>M</div>
@@ -60,7 +60,12 @@ export default function Footer() {
           </p>
         </div>
       </div>
-      <style>{`.footer-link:hover { color: hsl(var(--primary)); }`}</style>
+      <style>{`
+        .footer-link:hover { color: hsl(var(--primary)); }
+        @media (max-width: 768px) {
+          .footer-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+        }
+      `}</style>
     </footer>
   );
 }

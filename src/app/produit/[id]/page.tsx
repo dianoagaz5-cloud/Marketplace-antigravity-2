@@ -77,12 +77,12 @@ export default function ProduitPage() {
   };
 
   return (
-    <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "2rem 2rem 6rem" }}>
+    <div className="product-page" style={{ maxWidth: "1240px", margin: "0 auto", padding: "2rem 2rem 6rem" }}>
       <Link href="/boutique" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "hsl(var(--muted-foreground))", fontSize: "0.875rem", fontWeight: 500, marginBottom: "2rem", textDecoration: "none", transition: "color 0.2s" }}>
         <ArrowLeft size={16} /> Retour à la boutique
       </Link>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 420px", gap: "4rem", alignItems: "start" }}>
+      <div className="product-grid" style={{ display: "grid", gridTemplateColumns: "1fr 420px", gap: "4rem", alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <motion.div
             key={activeImage}
@@ -235,6 +235,12 @@ export default function ProduitPage() {
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .product-page { padding: 1.25rem 1rem 4rem !important; }
+          .product-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+        }
+      `}</style>
     </div>
   );
 }

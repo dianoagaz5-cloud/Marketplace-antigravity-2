@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search, ShoppingBag, User, Sun, Moon, X,
+  Search, ShoppingBag, User, Sun, Moon, X, Menu,
   ChevronDown, Shirt, Cpu, Home, Gem, UtensilsCrossed, Dumbbell,
   Heart, MessageSquare
 } from "lucide-react";
@@ -38,6 +38,7 @@ export default function Header() {
   const [openMenu, setOpenMenu]     = useState<string | null>(null);
   const [cartOpen, setCartOpen]     = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted]       = useState(false);
   const [scrolled, setScrolled]     = useState(false);
   const { theme, setTheme }         = useTheme();
@@ -48,7 +49,7 @@ export default function Header() {
   const headerRef                   = useRef<HTMLElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
-  useEffect(() => { setOpenMenu(null); setSearchOpen(false); }, [pathname]);
+  useEffect(() => { setOpenMenu(null); setSearchOpen(false); setMobileOpen(false); }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -117,6 +118,15 @@ export default function Header() {
               Contact
             </Link>
           </nav>
+
+          {/* ── Mobile burger ── */}
+          <button
+            className={`${styles.iconBtn} ${styles.burger}`}
+            onClick={() => setMobileOpen(v => !v)}
+            aria-label="Menu"
+          >
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
 
           {/* ── Actions ── */}
           <div className={styles.actions}>
@@ -236,6 +246,49 @@ export default function Header() {
           )}
         </AnimatePresence>
       </header>
+
+      {/* ── Mobile drawer ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className={styles.mobileDrawer}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.2 } }}
+            exit={{ opacity: 0, y: -10, transition: { duration: 0.15 } }}
+          >
+            <nav className={styles.mobileNav} aria-label="Navigation mobile">
+              <Link href="/boutique" className={`${styles.mobileLink} ${pathname.startsWith("/boutique") ? styles.mobileActive : ""}`}>
+                Boutique
+              </Link>
+              {BOUTIQUE_ITEMS.map(i => (
+                <Link key={i.href} href={i.href} className={styles.mobileSublink}>
+                  <i.icon size={16} /> {i.label}
+                </Link>
+              ))}
+              <Link href="/contact" className={`${styles.mobileLink} ${pathname === "/contact" ? styles.mobileActive : ""}`}>
+                Contact
+              </Link>
+              {user ? (
+                <>
+                  <Link href="/profile" className={`${styles.mobileLink} ${pathname.startsWith("/profile") ? styles.mobileActive : ""}`}>
+                    Mon profil
+                  </Link>
+                  {user.role === "ADMIN" && (
+                    <Link href="/admin" className={`${styles.mobileLink} ${pathname.startsWith("/admin") ? styles.mobileActive : ""}`}>
+                      Administration
+                    </Link>
+                  )}
+                  <button onClick={logout} className={styles.mobileLogout}>
+                    <LogOut size={16} /> Déconnexion
+                  </button>
+                </>
+              ) : (
+                <Link href="/auth/login" className={styles.mobileLink}>Se connecter</Link>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>

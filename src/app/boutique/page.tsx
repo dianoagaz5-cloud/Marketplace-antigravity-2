@@ -51,15 +51,15 @@ export default function BoutiquePage() {
   };
 
   return (
-    <div style={{ maxWidth: "1240px", margin: "0 auto", padding: "3rem 2rem" }}>
+    <div className="boutique-page" style={{ maxWidth: "1240px", margin: "0 auto", padding: "3rem 2rem" }}>
       <div style={{ marginBottom: "2.5rem" }}>
-        <h1 style={{ fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: "0.5rem" }}>Boutique</h1>
+        <h1 style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: "0.5rem" }}>Boutique</h1>
         <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.95rem" }}>
           {filtered.length} produits disponibles — livraison rapide au Bénin
         </p>
       </div>
 
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center", marginBottom: "2rem", flexWrap: "wrap" }}>
+      <div className="boutique-filters" style={{ display: "flex", gap: "1rem", alignItems: "center", marginBottom: "2rem", flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: "1 1 280px", minWidth: "220px", background: "hsl(var(--card))", border: "1.5px solid hsl(var(--border))", borderRadius: "var(--radius-full)", padding: "0.55rem 1rem" }}>
           <Search size={16} style={{ color: "hsl(var(--muted-foreground))", flexShrink: 0 }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un produit..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "0.9rem", color: "hsl(var(--foreground))", width: "100%", fontFamily: "inherit" }} />
@@ -151,6 +151,16 @@ export default function BoutiquePage() {
       <style>{`
         .boutique-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
         .boutique-card:hover .boutique-img { transform: scale(1.04); }
+
+        @media (max-width: 768px) {
+          .boutique-page { padding: 1.5rem 1rem !important; }
+          .boutique-filters { flex-direction: column; align-items: stretch !important; }
+          .boutique-filters > div:last-child { margin-left: 0 !important; }
+        }
+        @media (max-width: 480px) {
+          .boutique-filters > div:nth-child(2) { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+          .boutique-filters > div:nth-child(2)::-webkit-scrollbar { display: none; }
+        }
       `}</style>
     </div>
   );
