@@ -70,7 +70,7 @@ export default function EbookPage() {
             </button>
             <div style={{ display: "flex", gap: "0.75rem" }}>
               <button 
-                onClick={() => toggleFavorite(DEMO_EBOOK.id)}
+                onClick={() => toggleFavorite({ id: DEMO_EBOOK.id, type: "ebook", title: DEMO_EBOOK.title, price: DEMO_EBOOK.price, image: DEMO_EBOOK.cover, vendor: DEMO_EBOOK.author })}
                 style={{ flex: 1, padding: "0.875rem", borderRadius: "var(--radius-full)", border: "1.5px solid hsl(var(--border))", background: isFavorite(DEMO_EBOOK.id) ? "hsl(var(--danger) / 0.1)" : "transparent", cursor: "pointer", color: isFavorite(DEMO_EBOOK.id) ? "hsl(var(--danger))" : "hsl(var(--muted-foreground))", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
               >
                 <Heart size={18} fill={isFavorite(DEMO_EBOOK.id) ? "currentColor" : "none"} /> Favoris

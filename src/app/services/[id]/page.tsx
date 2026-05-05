@@ -77,7 +77,7 @@ export default function ServicePage() {
               <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "hsl(var(--primary))", textTransform: "uppercase", letterSpacing: "0.05em" }}>Service vérifié</span>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <button 
-                  onClick={() => toggleFavorite(DEMO_SERVICE.id)}
+                  onClick={() => toggleFavorite({ id: DEMO_SERVICE.id, type: "service", title: DEMO_SERVICE.title, price: DEMO_SERVICE.price, vendor: DEMO_SERVICE.provider })}
                   style={{ padding: "0.5rem", borderRadius: "var(--radius)", border: "1px solid hsl(var(--border))", background: isFavorite(DEMO_SERVICE.id) ? "hsl(var(--danger) / 0.1)" : "transparent", cursor: "pointer", color: isFavorite(DEMO_SERVICE.id) ? "hsl(var(--danger))" : "hsl(var(--muted-foreground))" }}
                 >
                   <Heart size={18} fill={isFavorite(DEMO_SERVICE.id) ? "currentColor" : "none"} />

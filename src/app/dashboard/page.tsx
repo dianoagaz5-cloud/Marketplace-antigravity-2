@@ -18,7 +18,7 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
 };
 
 const stats = [
@@ -82,7 +82,7 @@ function ActivityChart() {
               <motion.rect
                 initial={{ height: 0, y: 100 }}
                 animate={{ height: val, y: 100 - val }}
-                transition={{ type: "spring", stiffness: 200, damping: 20, delay: i * 0.05 }}
+                transition={{ type: "spring" as const, stiffness: 200, damping: 20, delay: i * 0.05 }}
                 x={x}
                 y={100 - val}
                 width={barWidth}

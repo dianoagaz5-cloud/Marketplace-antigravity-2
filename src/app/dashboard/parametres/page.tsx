@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
-const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } } };
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "0.75rem 1rem", borderRadius: "var(--radius)",

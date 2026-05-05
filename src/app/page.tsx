@@ -162,7 +162,7 @@ function SectionHeader({ title, subtitle, href, linkText }: { title: string; sub
 
 const fadeUp = {
   hidden: { opacity: 0, y: 8 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.2, 1, 0.4, 1] } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.35 } },
 };
 
 const stagger = {
@@ -232,7 +232,7 @@ export default function Home() {
           </motion.div>
 
           {/* Right — floating product cards */}
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 } }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", position: "relative" }}>
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0, transition: { duration: 0.6, delay: 0.2 } }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", position: "relative" }}>
             {PRODUCTS.slice(0, 4).map((p, i) => (
               <Link key={p.id} href={`/produit/${p.id}`} style={{ textDecoration: "none", transform: i % 2 === 1 ? "translateY(1.5rem)" : "none" }}>
                 <div style={{ background: "hsl(var(--card))", borderRadius: "var(--radius-lg)", border: "1px solid hsl(var(--border))", overflow: "hidden", boxShadow: "var(--shadow-md)" }}>
@@ -257,7 +257,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, delay: i * 0.07 }}
               style={{ textAlign: "center" }}
             >
               <div style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.03em", color: "hsl(var(--primary))" }}>{s.value}</div>

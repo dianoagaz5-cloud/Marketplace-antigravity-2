@@ -40,8 +40,8 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
           <motion.div
             key="drawer"
             initial={{ x: "100%" }}
-            animate={{ x: 0, transition: { type: "spring", stiffness: 320, damping: 32 } }}
-            exit={{ x: "100%", transition: { duration: 0.22, ease: [0.4, 0, 1, 1] } }}
+            animate={{ x: 0, transition: { type: "spring" as const, stiffness: 320, damping: 32 } }}
+            exit={{ x: "100%", transition: { duration: 0.22 } }}
             style={{ position: "fixed", top: 0, right: 0, bottom: 0, width: "100%", maxWidth: "420px", background: "hsl(var(--card))", borderLeft: "1px solid hsl(var(--border))", zIndex: 201, display: "flex", flexDirection: "column" }}
           >
             {/* Header */}

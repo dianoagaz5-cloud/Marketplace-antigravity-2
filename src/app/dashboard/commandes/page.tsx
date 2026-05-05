@@ -5,7 +5,7 @@ import { Search, Package, CheckCircle2, Clock, XCircle, Truck, ArrowRight } from
 import Link from "next/link";
 
 const stagger = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
-const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } } };
 
 const orders = [
   { id: "#ORD-047", client: "Amina Diallo", email: "amina@gmail.com", product: "Sneakers Premium", amount: 25000, date: "30 Avr 2026", status: "PAID" },
@@ -47,7 +47,7 @@ export default function DashboardCommandes() {
 
       {/* Main */}
       <main style={{ flex: 1, padding: "2.5rem" }}>
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 300, damping: 24 }}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring" as const, stiffness: 300, damping: 24 }}>
           <h1 style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: "0.25rem" }}>Commandes</h1>
           <p style={{ color: "hsl(var(--muted-foreground))", marginBottom: "2.5rem" }}>Gérez et suivez toutes vos commandes en temps réel.</p>
 
@@ -56,7 +56,6 @@ export default function DashboardCommandes() {
             {tabs.map((tab, i) => (
               <button key={tab} style={{
                 padding: "0.75rem 1.25rem",
-                borderBottom: i === 0 ? "2px solid hsl(var(--primary))" : "2px solid transparent",
                 color: i === 0 ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
                 fontWeight: i === 0 ? 600 : 500, fontSize: "0.875rem",
                 background: "none", border: "none", borderBottom: i === 0 ? "2px solid hsl(var(--primary))" : "2px solid transparent",

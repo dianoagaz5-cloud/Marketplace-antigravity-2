@@ -53,7 +53,7 @@ const VENDRE_ITEMS = [
 /* ── Animation variants ── */
 const menuVariants = {
   hidden: { opacity: 0, y: 8, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] } },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18 } },
   exit:    { opacity: 0, y: 6, scale: 0.97, transition: { duration: 0.12 } },
 };
 
@@ -321,7 +321,7 @@ export default function Header() {
             <motion.div
               className={styles.searchBar}
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+              animate={{ height: "auto", opacity: 1, transition: { duration: 0.2 } }}
               exit={{ height: 0, opacity: 0, transition: { duration: 0.15 } }}
             >
               <div className={styles.searchInner}>

@@ -51,7 +51,7 @@ export default function AIAssistant() {
         {open && (
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 320, damping: 28 } }}
+            animate={{ opacity: 1, scale: 1, y: 0, transition: { type: "spring" as const, stiffness: 320, damping: 28 } }}
             exit={{ opacity: 0, scale: 0.92, y: 12, transition: { duration: 0.18 } }}
             style={{ width: "340px", background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-lg)", display: "flex", flexDirection: "column", overflow: "hidden" }}
           >

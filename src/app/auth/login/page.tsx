@@ -2,11 +2,12 @@
 
 /* ── /auth/login ── */
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 const DEMO_ACCOUNTS = [
   { role: "Client",          email: "client@demo.bj",    password: "Demo2026!" },
@@ -21,9 +22,7 @@ const inp: React.CSSProperties = {
   fontFamily: "inherit", transition: "border-color 0.15s, box-shadow 0.15s",
 };
 
-import { useSearchParams } from "next/navigation";
-
-export default function LoginPage() {
+function LoginPageContent() {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -112,5 +111,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Chargement...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }
