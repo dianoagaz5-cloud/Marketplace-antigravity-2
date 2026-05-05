@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendorProfile VendorProfile?
+  orders        Order[]
+  wishlist      WishlistItem[]
+}
+
+model VendorProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  storeName   String
+  description String?
+  logoUrl     String?
+  bannerUrl   String?
+  isVerified  Boolean  @default(false)
+  balance     Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products    Product[]
+  services    Service[]
+  ebooks      Ebook[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  vendorId    String
+  vendor      VendorProfile @relation(fields: [vendorId], references: [id])
+  title       String
+  description String
+  price       Float
+  stock       Int      @default(0)
+  images      String[] // Array of URLs
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  wishlistItems WishlistItem[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  vendorId    String
+  vendor      VendorProfile @relation(fields: [vendorId], references: [id])
+  title       String
+  description String
+  price       Float
+  isNegotiable Boolean @default(false)
+  images      String[]
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  wishlistItems WishlistItem[]
+}
+
+model Ebook {
+  id          String   @id @default(cuid())
+  vendorId    String
+  vendor      VendorProfile @relation(fields: [vendorId], references: [id])
+  title       String
+  description String
+  price       Float
+  coverUrl    String
+  fileUrl     String // Secure URL
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  wishlistItems WishlistItem[]
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  totalAmount Float
+  status      String   @default("PENDING") // PENDING, PAID, DELIVERED
+  paymentMethod String // MOMO, MOOV, CELTIIS
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  
+  serviceId String?
+  service   Service? @relation(fields: [serviceId], references: [id])
+  
+  ebookId   String?
+  ebook     Ebook?   @relation(fields: [ebookId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@unique([userId, serviceId])
+  @@unique([userId, ebookId])
+}
