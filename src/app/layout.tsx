@@ -2,25 +2,24 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import AIAssistant from "@/components/ui/AIAssistant";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+import { ChatProvider } from "@/context/ChatContext";
 
 export const metadata: Metadata = {
-  title: "MarketBénin — La marketplace premium du Bénin",
+  title: "MarketBénin — La boutique en ligne premium du Bénin",
   description:
-    "Achetez et vendez en toute confiance : produits, services et ebooks — paiement sécurisé via MTN MoMo et Moov.",
-  keywords: ["marketplace", "bénin", "cotonou", "acheter", "vendre", "ecommerce"],
+    "Découvrez nos produits physiques sélectionnés. Contactez-nous directement sur WhatsApp pour passer commande.",
+  keywords: ["boutique", "bénin", "cotonou", "acheter", "produits", "ecommerce"],
   openGraph: {
     title: "MarketBénin",
-    description: "La marketplace premium du Bénin",
+    description: "La boutique en ligne premium du Bénin",
     locale: "fr_BJ",
     type: "website",
   },
 };
-
-import { ChatProvider } from "@/context/ChatContext";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,10 +29,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>
             <ChatProvider>
               <WishlistProvider>
-                <Header />
-                <main style={{ flex: 1 }}>{children}</main>
-                <Footer />
-                <AIAssistant />
+                <CartProvider>
+                  <Header />
+                  <main style={{ flex: 1 }}>{children}</main>
+                  <Footer />
+                </CartProvider>
               </WishlistProvider>
             </ChatProvider>
           </AuthProvider>

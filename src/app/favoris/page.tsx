@@ -95,13 +95,12 @@ export default function WishlistPage() {
                   </div>
                 </div>
                 <div style={{ padding: "1.5rem" }}>
-                  <p style={{ fontSize: "0.8rem", color: "hsl(var(--muted-foreground))", marginBottom: "0.25rem" }}>{item.vendor}</p>
                   <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem", lineHeight: 1.3 }}>{item.title}</h3>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "hsl(var(--primary))" }}>
                       {typeof item.price === "number" ? item.price.toLocaleString("fr") : item.price} F
                     </span>
-                    <Link href={`/${item.type === "product" ? "produit" : item.type + "s"}/${item.id}`} style={{ 
+                    <Link href={`/produit/${item.id}`} style={{ 
                       width: "40px", height: "40px", borderRadius: "0.75rem", 
                       backgroundColor: "hsl(var(--muted))", display: "flex", 
                       alignItems: "center", justifyContent: "center", color: "hsl(var(--foreground))"

@@ -1,11 +1,8 @@
 "use client";
 
-/* ── /auth/register ── */
-
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -18,7 +15,6 @@ const inp: React.CSSProperties = {
 
 export default function RegisterPage() {
   const [show, setShow] = useState(false);
-  const [role, setRole] = useState<"CUSTOMER" | "VENDOR">("CUSTOMER");
   const { register } = useAuth();
   const router = useRouter();
 
@@ -26,9 +22,7 @@ export default function RegisterPage() {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
     password: "",
-    storeName: ""
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,15 +30,9 @@ export default function RegisterPage() {
     register({
       name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
-      role: role
+      password: formData.password,
     });
-    
-    // Redirect based on role
-    if (role === "VENDOR") {
-      router.push("/dashboard");
-    } else {
-      router.push("/");
-    }
+    router.push("/");
   };
 
   return (
@@ -56,20 +44,10 @@ export default function RegisterPage() {
             <span style={{ fontWeight: 800, fontSize: "1.3rem", letterSpacing: "-0.03em" }}>Market<span style={{ color: "hsl(var(--primary))" }}>Bénin</span></span>
           </Link>
           <h1 style={{ fontSize: "1.6rem", fontWeight: 800, letterSpacing: "-0.03em", marginTop: "2rem", marginBottom: "0.5rem" }}>Créer un compte</h1>
-          <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.9rem" }}>Rejoignez la marketplace du Bénin</p>
+          <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.9rem" }}>Rejoignez notre boutique en ligne</p>
         </div>
 
         <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius-xl)", padding: "2rem", boxShadow: "var(--shadow-md)" }}>
-
-          {/* Role toggle */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1.75rem", padding: "0.375rem", background: "hsl(var(--muted))", borderRadius: "var(--radius)" }}>
-            {([["CUSTOMER", "Acheteur"], ["VENDOR", "Vendeur"]] as const).map(([val, label]) => (
-              <button key={val} onClick={() => setRole(val)} style={{ padding: "0.625rem", borderRadius: "calc(var(--radius) - 2px)", border: "none", fontWeight: 600, fontSize: "0.875rem", cursor: "pointer", fontFamily: "inherit", background: role === val ? "hsl(var(--card))" : "transparent", color: role === val ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))", boxShadow: role === val ? "var(--shadow-sm)" : "none", transition: "all 0.15s" }}>
-                {label}
-              </button>
-            ))}
-          </div>
-
           <form onSubmit={handleSubmit}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
               <div>
@@ -82,21 +60,9 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {role === "VENDOR" && (
-              <div style={{ marginBottom: "1.25rem" }}>
-                <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 600, marginBottom: "0.5rem" }}>Nom de la boutique</label>
-                <input type="text" placeholder="Ex: Boutique Kofi" required style={inp} value={formData.storeName} onChange={e => setFormData({...formData, storeName: e.target.value})} />
-              </div>
-            )}
-
             <div style={{ marginBottom: "1.25rem" }}>
               <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 600, marginBottom: "0.5rem" }}>Email</label>
               <input type="email" placeholder="votre@email.com" required style={inp} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-            </div>
-
-            <div style={{ marginBottom: "1.25rem" }}>
-              <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 600, marginBottom: "0.5rem" }}>Téléphone</label>
-              <input type="tel" placeholder="+229 97 00 00 00" required style={inp} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
             </div>
 
             <div style={{ marginBottom: "1.75rem" }}>

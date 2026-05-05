@@ -4,11 +4,10 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 type WishlistItem = {
   id: string | number;
-  type: "product" | "service" | "ebook";
+  type: "product";
   title: string;
   price: string | number;
   image?: string;
-  vendor?: string;
 };
 
 interface WishlistContextType {

@@ -1,19 +1,11 @@
 "use client";
 
-/* ── /auth/login ── */
-
 import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-
-const DEMO_ACCOUNTS = [
-  { role: "Client",          email: "client@demo.bj",    password: "Demo2026!" },
-  { role: "Vendeur",         email: "vendeur@demo.bj",   password: "Demo2026!" },
-  { role: "Administrateur",  email: "admin@demo.bj",     password: "Demo2026!" },
-];
 
 const inp: React.CSSProperties = {
   width: "100%", padding: "0.8rem 1rem", borderRadius: "var(--radius)",
@@ -26,35 +18,27 @@ function LoginPageContent() {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
   const callbackUrl = searchParams.get("callbackUrl");
 
-  const fillDemo = (account: typeof DEMO_ACCOUNTS[0]) => {
-    setEmail(account.email);
-    setPassword(account.password);
-  };
-
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email);
-    
-    if (callbackUrl) {
-      router.push(callbackUrl);
-    } else if (email === "vendeur@demo.bj") {
-      router.push("/dashboard");
-    } else {
-      router.push("/");
+    setError("");
+    const success = login(email, password);
+    if (!success) {
+      setError("Email ou mot de passe incorrect.");
+      return;
     }
+    router.push(callbackUrl || "/");
   };
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", background: "linear-gradient(135deg, hsl(258 72% 97%), hsl(var(--background)))" }}>
       <div style={{ width: "100%", maxWidth: "440px" }}>
-
-        {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.625rem", textDecoration: "none" }}>
             <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "linear-gradient(135deg, hsl(var(--primary)), hsl(258 72% 38%))", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: "1.2rem" }}>M</div>
@@ -64,21 +48,12 @@ function LoginPageContent() {
           <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.9rem" }}>Connectez-vous à votre compte</p>
         </div>
 
-        {/* Card */}
         <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius-lg)", padding: "2rem", boxShadow: "var(--shadow-md)" }}>
-
-          {/* Demo accounts */}
-          <div style={{ marginBottom: "1.75rem", padding: "1rem", background: "hsl(var(--primary) / 0.06)", borderRadius: "var(--radius)", border: "1px solid hsl(var(--primary) / 0.15)" }}>
-            <p style={{ fontSize: "0.78rem", fontWeight: 700, color: "hsl(var(--primary))", marginBottom: "0.625rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>Comptes de démo</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-              {DEMO_ACCOUNTS.map(a => (
-                <button key={a.role} onClick={() => fillDemo(a)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.5rem 0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid hsl(var(--primary) / 0.2)", background: "white", cursor: "pointer", fontFamily: "inherit", transition: "background 0.15s" }}>
-                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{a.role}</span>
-                  <span style={{ fontSize: "0.78rem", color: "hsl(var(--muted-foreground))", fontFamily: "monospace" }}>{a.email}</span>
-                </button>
-              ))}
+          {error && (
+            <div style={{ marginBottom: "1.25rem", padding: "0.75rem", background: "hsl(var(--danger) / 0.1)", borderRadius: "var(--radius)", border: "1px solid hsl(var(--danger) / 0.2)", color: "hsl(var(--danger))", fontSize: "0.85rem", fontWeight: 600 }}>
+              {error}
             </div>
-          </div>
+          )}
 
           <form onSubmit={handleLogin}>
             <div style={{ marginBottom: "1.25rem" }}>

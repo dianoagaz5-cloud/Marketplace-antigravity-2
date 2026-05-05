@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 type User = {
   name: string;
   email: string;
-  role: "CUSTOMER" | "VENDOR" | "ADMIN";
+  role: "CUSTOMER" | "ADMIN";
   avatar?: string;
   banner?: string;
 };
@@ -14,20 +14,23 @@ type User = {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string) => void;
-  register: (data: { name: string; email: string; role: "CUSTOMER" | "VENDOR" }) => void;
+  login: (email: string, password: string) => boolean;
+  register: (data: { name: string; email: string; password: string }) => void;
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Admin credentials (hardcoded for demo purposes)
+const ADMIN_EMAIL = "admin@marketbenin.bj";
+const ADMIN_PASSWORD = "Admin2026!";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Sync with localStorage
   useEffect(() => {
     const saved = localStorage.getItem("marketbenin_user");
     if (saved) {
@@ -44,48 +47,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading]);
 
-  const login = (email: string) => {
-    // Check local storage for registered users first
+  const login = (email: string, password: string): boolean => {
+    // Admin login
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      setUser({ name: "Administrateur", email, role: "ADMIN", avatar: "" });
+      return true;
+    }
+
+    // Check registered users
     const registeredUsersRaw = localStorage.getItem("marketbenin_registered_users");
     if (registeredUsersRaw) {
       const registeredUsers = JSON.parse(registeredUsersRaw);
-      const found = registeredUsers.find((u: User) => u.email === email);
+      const found = registeredUsers.find((u: User & { password: string }) => u.email === email && u.password === password);
       if (found) {
-        setUser(found);
-        return;
+        setUser({ name: found.name, email: found.email, role: "CUSTOMER", avatar: found.avatar || "" });
+        return true;
       }
     }
 
-    let mockUser: User;
-    if (email === "vendeur@demo.bj") {
-      mockUser = { name: "Kofi Boutique", email, role: "VENDOR", avatar: "" };
-    } else if (email === "admin@demo.bj") {
-      mockUser = { name: "Admin MarketBénin", email, role: "ADMIN", avatar: "" };
-    } else {
-      mockUser = { name: "Client Démo", email, role: "CUSTOMER", avatar: "" };
-    }
-    setUser(mockUser);
+    return false;
   };
 
-  const register = (data: { name: string; email: string; role: "CUSTOMER" | "VENDOR" }) => {
-    const newUser: User = { 
-      name: data.name, 
-      email: data.email, 
-      role: data.role,
-      avatar: "" 
+  const register = (data: { name: string; email: string; password: string }) => {
+    const newUser = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: "CUSTOMER" as const,
+      avatar: "",
     };
-    
-    // Save to registered users list
+
     const registeredUsersRaw = localStorage.getItem("marketbenin_registered_users");
     const registeredUsers = registeredUsersRaw ? JSON.parse(registeredUsersRaw) : [];
     registeredUsers.push(newUser);
     localStorage.setItem("marketbenin_registered_users", JSON.stringify(registeredUsers));
-    
-    setUser(newUser);
+
+    setUser({ name: data.name, email: data.email, role: "CUSTOMER", avatar: "" });
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("marketbenin_user");
     router.push("/");
   };
 

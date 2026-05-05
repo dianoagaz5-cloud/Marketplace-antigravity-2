@@ -162,7 +162,7 @@ export default function ProfileSettingsPage() {
               <input ref={avatarRef} type="file" hidden accept="image/*" onChange={(e) => handleFileChange(e, "avatar")} />
               
               <h3 style={{ marginTop: "0.75rem", fontWeight: 700 }}>{user.name}</h3>
-              <p style={{ fontSize: "0.8rem", color: "hsl(var(--muted-foreground))" }}>{user.role === "VENDOR" ? "Vendeur Certifié" : user.role === "ADMIN" ? "Administrateur" : "Client"}</p>
+              <p style={{ fontSize: "0.8rem", color: "hsl(var(--muted-foreground))" }}>{user.role === "ADMIN" ? "Administrateur" : "Client"}</p>
               
               <div style={{ marginTop: "1.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                 <div style={{ padding: "0.75rem", borderRadius: "var(--radius)", background: "hsl(var(--muted) / 0.5)" }}>

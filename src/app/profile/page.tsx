@@ -81,7 +81,7 @@ export default function ProfilePage() {
                 fontSize: "0.7rem", fontWeight: 800, borderRadius: "var(--radius-sm)",
                 color: "hsl(var(--muted-foreground))", textTransform: "uppercase"
               }}>
-                {user.role === "VENDOR" ? "Vendeur" : user.role === "ADMIN" ? "Admin" : "Client"}
+                {user.role === "ADMIN" ? "Admin" : "Client"}
               </span>
             </div>
             <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.9rem", marginTop: "0.25rem" }}>{user.email}</p>
@@ -94,25 +94,6 @@ export default function ProfilePage() {
             <LogOut size={20} />
           </button>
         </motion.div>
-
-        {/* Dashboard Shortcut for VENDORS */}
-        {user.role === "VENDOR" && (
-          <motion.div variants={fadeUp}>
-            <Link href="/dashboard" style={{ 
-              display: "flex", alignItems: "center", gap: "1rem", 
-              padding: "1.5rem", background: "hsl(var(--primary))", color: "white",
-              borderRadius: "var(--radius-lg)", textDecoration: "none",
-              marginBottom: "2rem", boxShadow: "0 6px 20px hsl(var(--primary) / 0.2)"
-            }}>
-              <Shield size={24} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, fontSize: "1.1rem" }}>Accéder au Dashboard Vendeur</div>
-                <div style={{ fontSize: "0.85rem", opacity: 0.9 }}>Gérer vos produits, ventes et revenus</div>
-              </div>
-              <ChevronRight size={20} />
-            </Link>
-          </motion.div>
-        )}
 
         {/* Menu Groups */}
         <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>

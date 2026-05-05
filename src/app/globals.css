@@ -1,18 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
   /* ─── LIGHT PALETTE ─── */
-  --background:   38 30% 98%;       /* warmer off-white #FAF9F6 */
-  --foreground:   220 20% 12%;      /* charcoal #1A1D23 */
+  --background:   38 30% 98%;
+  --foreground:   220 20% 12%;
 
   --card:         0 0% 100%;
   --card-foreground: 220 20% 12%;
 
-  --surface:      38 25% 95%;       /* slightly tinted surface */
+  --surface:      38 25% 95%;
 
-  --primary:      262 80% 50%;      /* vibrant royal violet #6D28D9 */
+  --primary:      258 72% 48%;
   --primary-foreground: 0 0% 100%;
-  --primary-hover: 262 80% 45%;
+  --primary-hover: 258 72% 42%;
 
-  --accent:       38 92% 50%;       /* rich honey gold #F59E0B */
+  --accent:       38 92% 48%;
   --accent-foreground: 30 40% 12%;
 
   --muted:        220 12% 95%;
@@ -26,26 +28,26 @@
   --danger:       0 72% 54%;
 
   --ring:         258 72% 52%;
-  --radius:       4px;
-  --radius-sm:    2px;
-  --radius-lg:    8px;
-  --radius-xl:    12px;
-  --radius-full:  8px; /* Plus de boutons pilules, arrondi léger partout */
+  --radius:       6px;
+  --radius-sm:    4px;
+  --radius-lg:    10px;
+  --radius-xl:    14px;
+  --radius-full:  9999px;
 
-  /* Shadows */
-  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow:     0 4px 10px -1px rgb(0 0 0 / 0.08), 0 2px 4px -1px rgb(0 0 0 / 0.04);
-  --shadow-md:  0 10px 20px -5px rgb(0 0 0 / 0.1), 0 4px 6px -5px rgb(0 0 0 / 0.04);
-  --shadow-lg:  0 15px 30px -10px rgb(0 0 0 / 0.15), 0 5px 15px -10px rgb(0 0 0 / 0.05);
-  --shadow-glow: 0 0 0 3px hsl(258 72% 52% / 0.1);
+  /* Shadows — softer, more premium */
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.04), 0 1px 1px 0 rgb(0 0 0 / 0.02);
+  --shadow:     0 4px 12px -2px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.03);
+  --shadow-md:  0 12px 24px -6px rgb(0 0 0 / 0.08), 0 4px 8px -4px rgb(0 0 0 / 0.03);
+  --shadow-lg:  0 20px 40px -10px rgb(0 0 0 / 0.12), 0 8px 16px -8px rgb(0 0 0 / 0.04);
+  --shadow-glow: 0 0 0 3px hsl(258 72% 52% / 0.12);
 
-  /* Easings - more professional and faster */
-  --ease-out:    cubic-bezier(0.2, 1, 0.4, 1);
+  /* Easings */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-bounce: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Font */
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .dark {
@@ -99,9 +101,15 @@ body {
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.6;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.18);
+  color: hsl(var(--foreground));
 }
 
 a { color: inherit; text-decoration: none; }

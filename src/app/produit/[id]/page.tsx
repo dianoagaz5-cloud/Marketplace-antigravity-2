@@ -2,23 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { 
-  ArrowLeft, Star, ShieldCheck, Truck, 
-  MessageSquare, Heart, Share2, ShoppingBag, 
-  Check, Info, X
+import {
+  ArrowLeft, Star, ShieldCheck, Truck,
+  MessageCircle, Heart, Share2, ShoppingBag,
+  Check
 } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
-import { useChat } from "@/context/ChatContext";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "@/context/CartContext";
+import { motion } from "framer-motion";
 
 const DEMO_PRODUCT = {
   id: "prod-1",
   title: "Sneakers Nike Air Premium",
-  vendor: "Style Cotonou",
-  vendorId: "style-cotonou",
   price: 27500,
   oldPrice: 35000,
+  refCode: "SNK-001",
   rating: 4.8,
   reviews: 124,
   stock: 8,
@@ -31,29 +29,35 @@ const DEMO_PRODUCT = {
   ],
 };
 
+const WHATSAPP_NUMBER = "+22997000000";
+
 export default function ProduitPage() {
   const { toggleFavorite, isFavorite } = useWishlist();
-  const { startConversation } = useChat();
-  const router = useRouter();
+  const { addItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [added, setAdded] = useState(false);
-  const [purchasing, setPurchasing] = useState(false);
 
   const active = isFavorite(DEMO_PRODUCT.id);
 
   const handleAddToCart = () => {
+    addItem({
+      id: 1,
+      name: DEMO_PRODUCT.title,
+      price: DEMO_PRODUCT.price,
+      img: DEMO_PRODUCT.images[0],
+      refCode: DEMO_PRODUCT.refCode,
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
-  const handleBuyNow = () => {
-    setPurchasing(true);
-    setTimeout(() => {
-      setPurchasing(false);
-      alert("Redirection vers le paiement sécurisé (MoMo/Moov)...");
-    }, 1000);
+  const buildWhatsAppMessage = () => {
+    const msg = `Bonjour, je suis intéressé par : ${DEMO_PRODUCT.title}\nRef: ${DEMO_PRODUCT.refCode}\nPrix: ${DEMO_PRODUCT.price.toLocaleString("fr")} F${selectedSize ? `\nPointure: ${selectedSize}` : ""}\n\nMerci !`;
+    return encodeURIComponent(msg);
   };
+
+  const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, "")}?text=${buildWhatsAppMessage()}`;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -67,7 +71,6 @@ export default function ProduitPage() {
         console.error("Erreur de partage:", err);
       }
     } else {
-      // Fallback: Copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       alert("Lien copié dans le presse-papier !");
     }
@@ -80,9 +83,8 @@ export default function ProduitPage() {
       </Link>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 420px", gap: "4rem", alignItems: "start" }}>
-        {/* Gallery */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <motion.div 
+          <motion.div
             key={activeImage}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -92,12 +94,12 @@ export default function ProduitPage() {
           </motion.div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
             {DEMO_PRODUCT.images.map((img, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 onClick={() => setActiveImage(i)}
-                style={{ 
-                  borderRadius: "var(--radius)", overflow: "hidden", aspectRatio: "1", background: "hsl(var(--muted))", 
-                  border: activeImage === i ? "2px solid hsl(var(--primary))" : "2px solid transparent", 
+                style={{
+                  borderRadius: "var(--radius)", overflow: "hidden", aspectRatio: "1", background: "hsl(var(--muted))",
+                  border: activeImage === i ? "2px solid hsl(var(--primary))" : "2px solid transparent",
                   cursor: "pointer", transition: "all 0.2s"
                 }}
               >
@@ -107,35 +109,33 @@ export default function ProduitPage() {
           </div>
         </div>
 
-        {/* Info */}
         <div style={{ position: "sticky", top: "100px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
             <div>
-              <Link href={`/vendeurs/${DEMO_PRODUCT.vendorId}`} style={{ fontSize: "0.8rem", fontWeight: 700, color: "hsl(var(--primary))", textDecoration: "none", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-                {DEMO_PRODUCT.vendor}
-              </Link>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "hsl(var(--primary))", letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                Ref: {DEMO_PRODUCT.refCode}
+              </span>
             </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <button 
+              <button
                 onClick={() => toggleFavorite({
                   id: DEMO_PRODUCT.id,
                   title: DEMO_PRODUCT.title,
                   price: DEMO_PRODUCT.price,
                   type: "product",
                   image: DEMO_PRODUCT.images[0],
-                  vendor: DEMO_PRODUCT.vendor
                 })}
-                style={{ 
-                  padding: "0.6rem", borderRadius: "var(--radius)", border: "1.5px solid", 
+                style={{
+                  padding: "0.6rem", borderRadius: "var(--radius)", border: "1.5px solid",
                   borderColor: active ? "hsl(0 72% 51%)" : "hsl(var(--border))",
-                  background: active ? "hsl(0 72% 51% / 0.1)" : "hsl(var(--card))", 
+                  background: active ? "hsl(0 72% 51% / 0.1)" : "hsl(var(--card))",
                   cursor: "pointer", color: active ? "hsl(0 72% 51%)" : "hsl(var(--muted-foreground))",
                   transition: "all 0.3s"
                 }}
               >
                 <Heart size={20} fill={active ? "currentColor" : "none"} />
               </button>
-              <button 
+              <button
                 onClick={handleShare}
                 style={{ padding: "0.6rem", borderRadius: "var(--radius)", border: "1.5px solid hsl(var(--border))", background: "hsl(var(--card))", cursor: "pointer", color: "hsl(var(--muted-foreground))" }}
               >
@@ -166,17 +166,17 @@ export default function ProduitPage() {
             </div>
             <div style={{ display: "flex", gap: "0.625rem", flexWrap: "wrap" }}>
               {DEMO_PRODUCT.sizes.map(s => (
-                <button 
-                  key={s} 
+                <button
+                  key={s}
                   onClick={() => setSelectedSize(s)}
-                  style={{ 
-                    width: "48px", height: "48px", borderRadius: "var(--radius)", 
+                  style={{
+                    width: "48px", height: "48px", borderRadius: "var(--radius)",
                     border: "2px solid",
-                    borderColor: selectedSize === s ? "hsl(var(--primary))" : "hsl(var(--border))", 
-                    background: selectedSize === s ? "hsl(var(--primary) / 0.05)" : "transparent", 
-                    cursor: "pointer", fontSize: "0.9rem", fontWeight: 700, 
-                    color: selectedSize === s ? "hsl(var(--primary))" : "hsl(var(--foreground))", 
-                    transition: "all 0.15s" 
+                    borderColor: selectedSize === s ? "hsl(var(--primary))" : "hsl(var(--border))",
+                    background: selectedSize === s ? "hsl(var(--primary) / 0.05)" : "transparent",
+                    cursor: "pointer", fontSize: "0.9rem", fontWeight: 700,
+                    color: selectedSize === s ? "hsl(var(--primary))" : "hsl(var(--foreground))",
+                    transition: "all 0.15s"
                   }}
                 >
                   {s}
@@ -186,51 +186,41 @@ export default function ProduitPage() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem", marginBottom: "2.5rem" }}>
-            <button 
+            <button
               onClick={handleAddToCart}
-              style={{ 
-                padding: "1.125rem", borderRadius: "var(--radius-lg)", 
-                background: added ? "hsl(var(--success))" : "hsl(var(--primary))", 
-                color: "white", border: "none", fontWeight: 800, fontSize: "1rem", 
-                cursor: "pointer", boxShadow: "0 6px 20px hsl(var(--primary) / 0.2)", 
+              style={{
+                padding: "1.125rem", borderRadius: "var(--radius-lg)",
+                background: added ? "hsl(var(--success))" : "hsl(var(--primary))",
+                color: "white", border: "none", fontWeight: 800, fontSize: "1rem",
+                cursor: "pointer", boxShadow: "0 6px 20px hsl(var(--primary) / 0.2)",
                 fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem",
                 transition: "all 0.3s"
               }}
             >
               {added ? <><Check size={20} strokeWidth={3} /> Ajouté au panier</> : <><ShoppingBag size={20} /> Ajouter au panier</>}
             </button>
-            <button 
-              onClick={handleBuyNow}
-              disabled={purchasing}
-              style={{ 
-                padding: "1.125rem", borderRadius: "var(--radius-lg)", 
-                background: "transparent", color: "hsl(var(--foreground))", 
-                border: "2px solid hsl(var(--foreground))", fontWeight: 800, fontSize: "1rem", 
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: "1.125rem", borderRadius: "var(--radius-lg)",
+                background: "#25D366", color: "white",
+                fontWeight: 800, fontSize: "1rem",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
+                textDecoration: "none", textAlign: "center",
+                boxShadow: "0 6px 20px rgba(37,211,102,0.25)",
               }}
             >
-              {purchasing ? "Chargement..." : "Acheter maintenant"}
-            </button>
-            <button 
-              onClick={() => {
-                startConversation(DEMO_PRODUCT.vendorId, DEMO_PRODUCT.vendor);
-                router.push("/messages");
-              }}
-              style={{ 
-                padding: "1.125rem", borderRadius: "var(--radius-lg)", 
-                background: "transparent", color: "hsl(var(--primary))", 
-                border: "2px solid hsl(var(--primary))", fontWeight: 800, fontSize: "1rem", 
-                cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem"
-              }}
-            >
-              <MessageSquare size={20} /> Discuter avec le vendeur
-            </button>
+              <MessageCircle size={20} /> Commander sur WhatsApp
+            </a>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "1.5rem", background: "hsl(var(--muted) / 0.3)", borderRadius: "var(--radius-lg)", border: "1px solid hsl(var(--border) / 0.5)", marginBottom: "2rem" }}>
             {[
-              { icon: ShieldCheck, text: "Paiement sécurisé via MoMo / Moov / Flooz" },
+              { icon: ShieldCheck, text: "Produits vérifiés et authentiques" },
               { icon: Truck, text: "Livraison Express sur tout le Bénin" },
-              { icon: MessageSquare, text: "Support client réactif 7j/7" },
+              { icon: MessageCircle, text: "Commande facile par WhatsApp" },
             ].map((i, idx) => (
               <div key={idx} style={{ display: "flex", alignItems: "center", gap: "0.875rem", fontSize: "0.875rem", color: "hsl(var(--muted-foreground))" }}>
                 <i.icon size={18} style={{ color: "hsl(var(--primary))" }} />
