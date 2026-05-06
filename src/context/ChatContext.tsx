@@ -1,18 +1,20 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useAuth } from "./AuthContext";
 
 export interface Message {
   id: string;
   senderId: string;
+  senderName: string;
   text: string;
   timestamp: string;
 }
 
 export interface Conversation {
   id: string;
+  participantId: string;
   participantName: string;
-  participantAvatar?: string;
   lastMessage: string;
   time: string;
   unread: boolean;
@@ -23,95 +25,105 @@ interface ChatContextType {
   conversations: Conversation[];
   activeConvId: string | null;
   setActiveConvId: (id: string | null) => void;
-  sendMessage: (text: string) => void;
-  startConversation: (vendeurId: string, vendeurName: string, vendeurAvatar?: string) => void;
+  sendMessage: (text: string, convId?: string) => void;
+  startConversation: (participantId: string, participantName: string) => void;
+  markAsRead: (convId: string) => void;
+  unreadCount: number;
 }
+
+const STORAGE_KEY = "marketbenin_chat";
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-const MOCK_CONVERSATIONS: Conversation[] = [
-  {
-    id: "style-cotonou",
-    participantName: "Style Cotonou",
-    participantAvatar: "SC",
-    lastMessage: "Bonjour ! Est-ce que les sneakers Nike sont encore disponibles ?",
-    time: "14:20",
-    unread: true,
-    messages: [
-      { id: "1", senderId: "me", text: "Bonjour ! Est-ce que les sneakers Nike sont encore disponibles ?", timestamp: "14:15" },
-      { id: "2", senderId: "style-cotonou", text: "Bonjour Amina, oui il nous en reste quelques-unes en taille 42.", timestamp: "14:20" },
-    ]
-  },
-  {
-    id: "dev-benin",
-    participantName: "Dev Bénin Studio",
-    participantAvatar: "DB",
-    lastMessage: "Parfait, je vous envoie le devis demain.",
-    time: "Hier",
-    unread: false,
-    messages: [
-      { id: "1", senderId: "me", text: "J'ai besoin d'un site e-commerce pour ma boutique.", timestamp: "Hier" },
-      { id: "2", senderId: "dev-benin", text: "Parfait, je vous envoie le devis demain.", timestamp: "Hier" },
-    ]
-  },
-  {
-    id: "client-1",
-    participantName: "Moussa Traoré",
-    participantAvatar: "MT",
-    lastMessage: "Bonjour, j'aimerais commander 5 unités de votre produit.",
-    time: "10:05",
-    unread: true,
-    messages: [
-      { id: "1", senderId: "client-1", text: "Bonjour, j'aimerais commander 5 unités de votre produit. Est-ce possible d'avoir une réduction ?", timestamp: "10:05" },
-    ]
-  }
-];
+function loadConvos(): Conversation[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveConvos(convos: Conversation[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(convos));
+}
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
-  const [conversations, setConversations] = useState<Conversation[]>(MOCK_CONVERSATIONS);
+  const { user } = useAuth();
+  const [conversations, setConversations] = useState<Conversation[]>(loadConvos);
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
 
-  const sendMessage = (text: string) => {
-    if (!activeConvId || !text.trim()) return;
+  useEffect(() => { saveConvos(conversations); }, [conversations]);
 
-    setConversations(prev => prev.map(conv => {
-      if (conv.id === activeConvId) {
-        const newMessage: Message = {
-          id: Date.now().toString(),
-          senderId: "me",
-          text,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        return {
-          ...conv,
-          lastMessage: text,
-          time: newMessage.timestamp,
-          messages: [...conv.messages, newMessage]
-        };
+  // Sync across tabs
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) {
+        setConversations(loadConvos());
       }
-      return conv;
-    }));
-  };
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
-  const startConversation = (vendeurId: string, vendeurName: string, vendeurAvatar?: string) => {
-    const existing = conversations.find(c => c.id === vendeurId);
-    if (!existing) {
+  const sendMessage = useCallback((text: string, convId?: string) => {
+    const targetId = convId || activeConvId;
+    if (!targetId || !text.trim()) return;
+    const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const isAdmin = user?.role === "ADMIN";
+    const senderId = isAdmin ? "admin" : (user?.email || "anonymous");
+    const senderName = isAdmin ? "Admin" : (user?.name || "Client");
+
+    setConversations(prev => {
+      const existing = prev.find(c => c.id === targetId);
+      const newMsg: Message = { id: Date.now().toString(), senderId, senderName, text: text.trim(), timestamp: now };
+      if (existing) {
+        return prev.map(c => c.id === targetId ? {
+          ...c,
+          lastMessage: text.trim(),
+          time: now,
+          unread: senderId !== "admin", // unread for admin when client writes
+          messages: [...c.messages, newMsg]
+        } : c);
+      }
+      // Create new conversation if not exists
       const newConv: Conversation = {
-        id: vendeurId,
-        participantName: vendeurName,
-        participantAvatar: vendeurAvatar || vendeurName[0],
-        lastMessage: "Nouvelle conversation",
+        id: targetId,
+        participantId: isAdmin ? targetId : "admin",
+        participantName: isAdmin ? targetId.replace(/@.*/, "") : "Admin MarketBénin",
+        lastMessage: text.trim(),
+        time: now,
+        unread: senderId !== "admin",
+        messages: [newMsg]
+      };
+      return [newConv, ...prev];
+    });
+  }, [activeConvId, user]);
+
+  const startConversation = useCallback((participantId: string, participantName: string) => {
+    setConversations(prev => {
+      if (prev.find(c => c.id === participantId)) return prev;
+      const newConv: Conversation = {
+        id: participantId,
+        participantId,
+        participantName,
+        lastMessage: "",
         time: "Maintenant",
         unread: false,
         messages: []
       };
-      setConversations([newConv, ...conversations]);
-    }
-    setActiveConvId(vendeurId);
-  };
+      return [newConv, ...prev];
+    });
+    setActiveConvId(participantId);
+  }, []);
+
+  const markAsRead = useCallback((convId: string) => {
+    setConversations(prev => prev.map(c => c.id === convId ? { ...c, unread: false } : c));
+  }, []);
+
+  const unreadCount = conversations.filter(c => c.unread).length;
 
   return (
-    <ChatContext.Provider value={{ conversations, activeConvId, setActiveConvId, sendMessage, startConversation }}>
+    <ChatContext.Provider value={{ conversations, activeConvId, setActiveConvId, sendMessage, startConversation, markAsRead, unreadCount }}>
       {children}
     </ChatContext.Provider>
   );

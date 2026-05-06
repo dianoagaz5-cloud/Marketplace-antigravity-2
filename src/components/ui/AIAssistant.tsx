@@ -7,15 +7,25 @@ import { usePathname } from "next/navigation";
 
 const SUGGESTIONS = [
   "Comment acheter un produit ?",
-  "Comment devenir vendeur ?",
-  "Modes de paiement disponibles ?",
+  "Comment contacter l'admin ?",
+  "Quels sont les délais de livraison ?",
 ];
 
 const RESPONSES: Record<string, string> = {
-  "Comment acheter un produit ?": "Naviguez vers la boutique, sélectionnez un produit, choisissez vos options et ajoutez-le au panier. Ensuite, suivez les étapes de paiement via MTN MoMo ou Moov Money.",
-  "Comment devenir vendeur ?": "Cliquez sur « Vendre » dans la barre de navigation, puis « Vendre un produit ». Créez votre compte vendeur gratuitement et configurez votre boutique en moins de 10 minutes.",
-  "Modes de paiement disponibles ?": "Nous acceptons MTN MoMo, Moov Money et Celtiis Cash. Tous les paiements sont sécurisés et les fonds sont protégés jusqu'à la livraison.",
+  "Comment acheter un produit ?": "Parcourez la boutique, cliquez sur un produit, choisissez vos options puis cliquez sur « Commander sur WhatsApp ». Notre équipe vous confirmera la commande et les détails de livraison au Bénin.",
+  "Comment contacter l'admin ?": "Utilisez la messagerie intégrée (icône Messages) ou écrivez-nous directement sur WhatsApp au +229 97 00 00 00. Nous répondons sous 24h.",
+  "Quels sont les délais de livraison ?": "La livraison est rapide sur tout le Bénin : Cotonou en 24-48h, autres villes en 48-72h. Les frais de livraison sont calculés selon votre localisation.",
 };
+
+const KEYWORDS: { keys: string[]; reply: string }[] = [
+  { keys: ["prix", "cout", "coût", "combien"], reply: "Les prix sont affichés sur chaque fiche produit. Cliquez sur « Commander sur WhatsApp » pour un devis précis avec livraison incluse." },
+  { keys: ["livraison", "expedition", "expédition", "envoi", "recevoir"], reply: "Nous livrons sur tout le Bénin. Cotonou : 24-48h. Autres villes : 48-72h. Les frais dépendent de votre localisation exacte." },
+  { keys: ["whatsapp", "contact", "telephone", "téléphone", "appeler", "joindre"], reply: "Contactez-nous sur WhatsApp au +229 97 00 00 00 ou via la messagerie du site. Réponse sous 24h." },
+  { keys: ["panier", "cart", "ajouter"], reply: "Ajoutez des produits au panier puis validez. Vous pouvez aussi commander directement par WhatsApp depuis n'importe quelle fiche produit." },
+  { keys: ["compte", "inscription", "connecter", "login", "connexion"], reply: "Créez un compte client gratuit en quelques secondes. Allez sur Connexion > Créer un compte. Seuls les comptes CLIENT sont acceptés." },
+  { keys: ["produit", "article", "acheter", "boutique"], reply: "Notre boutique propose des produits physiques soigneusement sélectionnés : mode, électronique, maison, accessoires. Tous sont vérifiés avant expédition." },
+  { keys: ["retour", "rembourser", "remboursement", "échange"], reply: "Vous disposez de 7 jours après réception pour demander un retour ou échange si le produit ne correspond pas à la description." },
+];
 
 export default function AIAssistant() {
   const pathname = usePathname();
@@ -39,10 +49,19 @@ export default function AIAssistant() {
     setInput("");
     setLoading(true);
     setTimeout(() => {
-      const reply = RESPONSES[text] ?? "Je note votre question et la transmets à notre équipe. Avez-vous d'autres questions ?";
+      const lower = text.toLowerCase();
+      let reply = RESPONSES[text];
+      if (!reply) {
+        for (const k of KEYWORDS) {
+          if (k.keys.some(key => lower.includes(key))) { reply = k.reply; break; }
+        }
+      }
+      if (!reply) {
+        reply = "Je n'ai pas trouvé de réponse exacte à votre question. Vous pouvez utiliser la messagerie du site ou nous contacter sur WhatsApp au +229 97 00 00 00. Nous répondons sous 24h.";
+      }
       setMsgs(p => [...p, { role: "ai", text: reply }]);
       setLoading(false);
-    }, 900);
+    }, 700);
   };
 
   return (

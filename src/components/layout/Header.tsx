@@ -133,7 +133,7 @@ export default function Header() {
 
             {/* Search toggle */}
             <button
-              className={styles.iconBtn}
+              className={`${styles.iconBtn} ${styles.hideMobileSm}`}
               onClick={() => setSearchOpen(v => !v)}
               aria-label="Rechercher"
             >
@@ -143,7 +143,7 @@ export default function Header() {
             {/* Theme */}
             {mounted && (
               <button
-                className={styles.iconBtn}
+                className={`${styles.iconBtn} ${styles.hideMobileSm}`}
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 aria-label="Changer le thème"
               >
@@ -152,9 +152,9 @@ export default function Header() {
             )}
 
             {/* Favorites */}
-            <Link 
-              href="/favoris" 
-              className={styles.iconBtn} 
+            <Link
+              href="/favoris"
+              className={`${styles.iconBtn} ${styles.hideMobileSm}`}
               aria-label="Mes favoris"
             >
               <Heart size={19} />
@@ -174,7 +174,7 @@ export default function Header() {
             {/* Messages */}
             <Link
               href="/messages"
-              className={styles.iconBtn}
+              className={`${styles.iconBtn} ${styles.hideMobileSm}`}
               aria-label="Mes messages"
             >
               <MessageSquare size={19} />

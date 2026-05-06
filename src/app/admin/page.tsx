@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState(INITIAL_USERS);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newProduct, setNewProduct] = useState({ title: "", refCode: "", price: "", stock: "", cat: "mode" });
+  const [newProduct, setNewProduct] = useState({ title: "", refCode: "", price: "", stock: "", cat: "mode", img: "" });
 
   if (!user || user.role !== "ADMIN") {
     return (
@@ -52,9 +52,10 @@ export default function AdminDashboard() {
       price: Number(newProduct.price),
       stock: Number(newProduct.stock),
       cat: newProduct.cat,
+      img: newProduct.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80",
     };
     setProducts(prev => [...prev, p]);
-    setNewProduct({ title: "", refCode: "", price: "", stock: "", cat: "mode" });
+    setNewProduct({ title: "", refCode: "", price: "", stock: "", cat: "mode", img: "" });
     setShowAddForm(false);
   };
 
@@ -166,6 +167,10 @@ export default function AdminDashboard() {
                     <label style={{ fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>Stock</label>
                     <input required type="number" value={newProduct.stock} onChange={e => setNewProduct({...newProduct, stock: e.target.value})} style={{ width: "100%", padding: "0.5rem", borderRadius: "var(--radius)", border: "1px solid hsl(var(--border))", background: "hsl(var(--muted) / 0.3)" }} />
                   </div>
+                  <div>
+                    <label style={{ fontSize: "0.8rem", fontWeight: 600, display: "block", marginBottom: "0.25rem" }}>Image URL</label>
+                    <input value={newProduct.img} onChange={e => setNewProduct({...newProduct, img: e.target.value})} placeholder="https://..." style={{ width: "100%", padding: "0.5rem", borderRadius: "var(--radius)", border: "1px solid hsl(var(--border))", background: "hsl(var(--muted) / 0.3)" }} />
+                  </div>
                   <div style={{ display: "flex", alignItems: "flex-end" }}>
                     <button type="submit" style={{ padding: "0.5rem 1rem", borderRadius: "var(--radius)", background: "hsl(var(--success))", color: "white", border: "none", fontWeight: 700, cursor: "pointer" }}>Enregistrer</button>
                   </div>
@@ -186,7 +191,12 @@ export default function AdminDashboard() {
                     <tbody>
                       {filteredProducts.map(p => (
                         <tr key={p.id} style={{ borderBottom: "1px solid hsl(var(--border) / 0.5)" }}>
-                          <td style={{ padding: "1rem", fontWeight: 600 }}>{p.title}</td>
+                          <td style={{ padding: "1rem", fontWeight: 600 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                              <img src={(p as any).img || ""} alt="" style={{ width: "40px", height: "40px", borderRadius: "var(--radius)", objectFit: "cover", background: "hsl(var(--muted))" }} />
+                              {p.title}
+                            </div>
+                          </td>
                           <td style={{ padding: "1rem", fontSize: "0.85rem" }}>{p.refCode}</td>
                           <td style={{ padding: "1rem", fontWeight: 700 }}>{p.price.toLocaleString("fr")} F</td>
                           <td style={{ padding: "1rem" }}>{p.stock}</td>

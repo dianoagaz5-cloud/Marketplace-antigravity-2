@@ -17,10 +17,10 @@ const PRODUCTS = [
 ];
 
 const STATS = [
-  { value: "500+", label: "Produits disponibles" },
-  { value: "100%", label: "Produits vérifiés" },
-  { value: "24/7", label: "Support client" },
-  { value: "48h", label: "Livraison rapide" },
+  { value: "500+", label: "Produits" },
+  { value: "100%", label: "Vérifiés" },
+  { value: "24/7", label: "Support" },
+  { value: "48h", label: "Livraison" },
 ];
 
 /* ────────────────────────────────
@@ -112,16 +112,16 @@ export default function Home() {
   return (
     <>
       {/* ══════════════════ HERO ══════════════════ */}
-      <section style={{
+      <section className="hero-section" style={{
         position: "relative",
         minHeight: "88vh",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        background: "linear-gradient(135deg, hsl(258 72% 97%) 0%, hsl(var(--background)) 60%)",
+        background: "hsl(var(--background))",
       }}>
-        <div style={{ position: "absolute", top: "-120px", right: "-80px", width: "520px", height: "520px", borderRadius: "50%", background: "radial-gradient(circle, hsl(258 72% 52% / 0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "360px", height: "360px", borderRadius: "50%", background: "radial-gradient(circle, hsl(35 95% 55% / 0.10) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "-120px", right: "-80px", width: "min(520px, 90vw)", height: "min(520px, 90vw)", borderRadius: "50%", background: "radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "min(360px, 70vw)", height: "min(360px, 70vw)", borderRadius: "50%", background: "radial-gradient(circle, hsl(var(--accent) / 0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
 
         <div className="hero-grid" style={{ maxWidth: "1240px", margin: "0 auto", padding: "4rem 2rem", width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
           <motion.div initial="hidden" animate="show" variants={stagger}>

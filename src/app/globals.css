@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* ─── LIGHT PALETTE ─── */
-  --background:   38 30% 98%;
+  /* ─── LIGHT PALETTE #FAF9F6 ─── */
+  --background:   40 20% 97%;    /* #FAF9F6 */
   --foreground:   220 20% 12%;
 
-  --card:         0 0% 100%;
+  --card:         40 15% 99%;
   --card-foreground: 220 20% 12%;
 
-  --surface:      38 25% 95%;
+  --surface:      40 15% 94%;
 
   --primary:      258 72% 48%;
   --primary-foreground: 0 0% 100%;
@@ -51,27 +51,27 @@
 }
 
 .dark {
-  /* ─── DARK PALETTE — noir uniforme ─── */
-  --background:   0 0% 0%;       /* #000000 */
-  --foreground:   0 0% 96%;      /* near-white #F5F5F5 */
+  /* ─── DARK PALETTE #010013 ─── */
+  --background:   244 100% 4%;   /* #010013 */
+  --foreground:   220 14% 96%;   /* near-white */
 
-  --card:         0 0% 3%;       /* #080808 */
-  --card-foreground: 0 0% 96%;
+  --card:         244 80% 6%;    /* #0a0a1a */
+  --card-foreground: 220 14% 96%;
 
-  --surface:      0 0% 5%;       /* #0D0D0D */
+  --surface:      244 60% 10%;  /* #101030 */
 
-  --primary:      258 75% 62%;   /* violet clair */
+  --primary:      258 80% 65%;   /* violet clair */
   --primary-foreground: 0 0% 100%;
-  --primary-hover: 258 75% 55%;
+  --primary-hover: 258 80% 58%;
 
-  --accent:       38 90% 55%;
+  --accent:       38 90% 58%;
   --accent-foreground: 30 40% 10%;
 
-  --muted:        0 0% 6%;       /* #0F0F0F */
-  --muted-foreground: 0 0% 45%;  /* gris texte secondaire */
+  --muted:        244 50% 12%;   /* #151540 */
+  --muted-foreground: 220 10% 55%;
 
-  --border:       0 0% 10%;      /* #1A1A1A */
-  --border-light: 0 0% 12%;      /* #1F1F1F */
+  --border:       244 40% 15%;   /* #1a1a45 */
+  --border-light: 244 35% 18%;  /* #1f1f55 */
 
   --success:      154 60% 48%;
   --warning:      38 90% 58%;

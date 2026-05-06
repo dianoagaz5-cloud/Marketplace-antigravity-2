@@ -7,6 +7,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { ChatProvider } from "@/context/ChatContext";
+import AIAssistant from "@/components/ui/AIAssistant";
 
 export const metadata: Metadata = {
   title: "MarketBénin — La boutique en ligne premium du Bénin",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Header />
                   <main style={{ flex: 1 }}>{children}</main>
                   <Footer />
+                  <AIAssistant />
                 </CartProvider>
               </WishlistProvider>
             </ChatProvider>
