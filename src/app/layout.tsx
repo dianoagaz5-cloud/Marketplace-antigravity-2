@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <WishlistProvider>
                 <CartProvider>
                   <Header />
+                  <Breadcrumb />
                   <main style={{ flex: 1 }}>{children}</main>
                   <Footer />
                   <AIAssistant />

@@ -1,105 +1,60 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
   CUSTOMER
-  VENDOR
   ADMIN
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
-  password  String
   name      String?
   role      Role     @default(CUSTOMER)
+  avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  vendorProfile VendorProfile?
   orders        Order[]
-  wishlist      WishlistItem[]
-}
-
-model VendorProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id])
-  storeName   String
-  description String?
-  logoUrl     String?
-  bannerUrl   String?
-  isVerified  Boolean  @default(false)
-  balance     Float    @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  products    Product[]
-  services    Service[]
-  ebooks      Ebook[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  sentMessages  Message[]  @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  refCode     String   @unique // Code de référence pour le fournisseur
+  id          String   @id @default(uuid())
+  refCode     String   @unique
   title       String
   description String
   price       Float
   oldPrice    Float?
   stock       Int      @default(0)
-  images      String[] // Array of URLs
-  category    String
-  badge       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  wishlistItems WishlistItem[]
-}
-
-model Service {
-  id          String   @id @default(cuid())
-  vendorId    String
-  vendor      VendorProfile @relation(fields: [vendorId], references: [id])
-  title       String
-  description String
-  price       Float
-  isNegotiable Boolean @default(false)
   images      String[]
   category    String
+  badge       String?
+  rating      Float    @default(4.5)
+  reviews     Int      @default(0)
+  sizes       String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   wishlistItems WishlistItem[]
-}
-
-model Ebook {
-  id          String   @id @default(cuid())
-  vendorId    String
-  vendor      VendorProfile @relation(fields: [vendorId], references: [id])
-  title       String
-  description String
-  price       Float
-  coverUrl    String
-  fileUrl     String // Secure URL
-  category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  wishlistItems WishlistItem[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
 }
 
 model Order {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
   totalAmount Float
@@ -107,25 +62,52 @@ model Order {
   paymentMethod String // MOMO, MOOV, CELTIIS
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+  price     Float
+  createdAt DateTime @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
 }
 
 model WishlistItem {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-  
-  productId String?
-  product   Product? @relation(fields: [productId], references: [id])
-  
-  serviceId String?
-  service   Service? @relation(fields: [serviceId], references: [id])
-  
-  ebookId   String?
-  ebook     Ebook?   @relation(fields: [ebookId], references: [id])
-
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])
-  @@unique([userId, serviceId])
-  @@unique([userId, ebookId])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  receiver  User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  text      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

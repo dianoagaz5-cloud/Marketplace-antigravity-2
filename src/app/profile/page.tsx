@@ -55,18 +55,18 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "3rem 2rem 6rem" }}>
+    <div className="profile-page" style={{ maxWidth: "800px", margin: "0 auto", padding: "3rem 2rem 6rem", background: "hsl(var(--background))", minHeight: "100vh" }}>
       <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.1 } } }}>
-        
+
         {/* Header Profil */}
-        <motion.div variants={fadeUp} style={{ 
-          display: "flex", alignItems: "center", gap: "1.5rem", 
-          padding: "2rem", background: "hsl(var(--card))", 
+        <motion.div variants={fadeUp} style={{
+          display: "flex", alignItems: "center", gap: "1.5rem",
+          padding: "2rem", background: "hsl(var(--card))",
           borderRadius: "var(--radius-lg)", border: "1px solid hsl(var(--border) / 0.5)",
           marginBottom: "2rem", boxShadow: "var(--shadow-sm)"
         }}>
-          <div style={{ 
-            width: "80px", height: "80px", borderRadius: "var(--radius-lg)", 
+          <div style={{
+            width: "80px", height: "80px", borderRadius: "var(--radius-lg)",
             background: "hsl(var(--primary))", color: "white",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: "2rem", fontWeight: 800, flexShrink: 0, overflow: "hidden"
@@ -76,8 +76,8 @@ export default function ProfilePage() {
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <h1 style={{ fontSize: "1.5rem", fontWeight: 800, letterSpacing: "-0.02em" }}>{user.name}</h1>
-              <span style={{ 
-                padding: "4px 10px", background: "hsl(var(--muted))", 
+              <span style={{
+                padding: "4px 10px", background: "hsl(var(--muted))",
                 fontSize: "0.7rem", fontWeight: 800, borderRadius: "var(--radius-sm)",
                 color: "hsl(var(--muted-foreground))", textTransform: "uppercase"
               }}>
@@ -86,7 +86,7 @@ export default function ProfilePage() {
             </div>
             <p style={{ color: "hsl(var(--muted-foreground))", fontSize: "0.9rem", marginTop: "0.25rem" }}>{user.email}</p>
           </div>
-          <button 
+          <button
             onClick={logout}
             style={{ padding: "0.75rem", borderRadius: "var(--radius)", border: "1.5px solid hsl(var(--border))", background: "transparent", color: "hsl(var(--danger))", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             title="Déconnexion"

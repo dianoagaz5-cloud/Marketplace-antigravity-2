@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, ShoppingBag, User, Sun, Moon, X, Menu,
   ChevronDown, Shirt, Cpu, Home, Gem, UtensilsCrossed, Dumbbell,
-  Heart, MessageSquare
+  Heart, MessageSquare, Info
 } from "lucide-react";
 import styles from "./Header.module.css";
 import CartDrawer from "@/components/ui/CartDrawer";
@@ -77,20 +77,27 @@ export default function Header() {
       >
         <div className={styles.inner}>
 
+          {/* ── Mobile burger ── */}
+          <button
+            className={`${styles.iconBtn} ${styles.burger}`}
+            onClick={() => setMobileOpen(v => !v)}
+            aria-label="Menu"
+          >
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+
           {/* ── Logo ── */}
           <Link href="/" className={styles.logo} aria-label="Accueil MarketBénin">
             <span className={styles.logoMark}>M</span>
             <span className={styles.logoText}>Market<strong>Bénin</strong></span>
           </Link>
 
-          {/* ── Nav ── */}
+          {/* ── Nav desktop ── */}
           <nav className={styles.nav} aria-label="Navigation principale">
-
-            {/* Boutique */}
+            <Link href="/" className={`${styles.navLink} ${pathname === "/" ? styles.active : ""}`}>Accueil</Link>
             <div className={styles.navItem} onMouseEnter={() => setOpenMenu("boutique")} onMouseLeave={() => setOpenMenu(null)}>
               <Link href="/boutique" className={`${styles.navLink} ${pathname.startsWith("/boutique") ? styles.active : ""}`}>
-                Boutique
-                <ChevronDown size={13} className={`${styles.chevron} ${openMenu === "boutique" ? styles.open : ""}`} />
+                Boutique <ChevronDown size={13} className={`${styles.chevron} ${openMenu === "boutique" ? styles.open : ""}`} />
               </Link>
               <AnimatePresence>
                 {openMenu === "boutique" && (
@@ -98,8 +105,7 @@ export default function Header() {
                     <div className={styles.megaGrid}>
                       {BOUTIQUE_ITEMS.map(i => (
                         <Link key={i.href} href={i.href} className={styles.megaItem}>
-                          <i.icon size={16} className={styles.megaIcon} />
-                          {i.label}
+                          <i.icon size={16} className={styles.megaIcon} /> {i.label}
                         </Link>
                       ))}
                     </div>
@@ -110,82 +116,43 @@ export default function Header() {
                 )}
               </AnimatePresence>
             </div>
-
-            <Link href="/boutique" className={`${styles.navLink} ${pathname === "/boutique" ? styles.active : ""}`}>
-              Tous les produits
-            </Link>
-            <Link href="/contact" className={`${styles.navLink} ${pathname === "/contact" ? styles.active : ""}`}>
-              Contact
-            </Link>
+            <Link href="/a-propos" className={`${styles.navLink} ${pathname === "/a-propos" ? styles.active : ""}`}>À propos</Link>
+            <Link href="/contact" className={`${styles.navLink} ${pathname === "/contact" ? styles.active : ""}`}>Contact</Link>
           </nav>
-
-          {/* ── Mobile burger ── */}
-          <button
-            className={`${styles.iconBtn} ${styles.burger}`}
-            onClick={() => setMobileOpen(v => !v)}
-            aria-label="Menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
 
           {/* ── Actions ── */}
           <div className={styles.actions}>
-
-            {/* Search toggle */}
-            <button
-              className={`${styles.iconBtn} ${styles.hideMobileSm}`}
-              onClick={() => setSearchOpen(v => !v)}
-              aria-label="Rechercher"
-            >
+            {/* Search toggle desktop */}
+            <button className={`${styles.iconBtn} ${styles.hideMobileSm}`} onClick={() => setSearchOpen(v => !v)} aria-label="Rechercher">
               {searchOpen ? <X size={19} /> : <Search size={19} />}
             </button>
 
-            {/* Theme */}
+            {/* Theme — toujours visible */}
             {mounted && (
-              <button
-                className={`${styles.iconBtn} ${styles.hideMobileSm}`}
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                aria-label="Changer le thème"
-              >
+              <button className={styles.iconBtn} onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="Changer le thème">
                 {theme === "dark" ? <Sun size={19} /> : <Moon size={19} />}
               </button>
             )}
 
-            {/* Favorites */}
-            <Link
-              href="/favoris"
-              className={`${styles.iconBtn} ${styles.hideMobileSm}`}
-              aria-label="Mes favoris"
-            >
+            {/* Favorites desktop */}
+            <Link href="/favoris" className={`${styles.iconBtn} ${styles.hideMobileSm}`} aria-label="Mes favoris">
               <Heart size={19} />
               {favorites.length > 0 && <span className={styles.cartBadge}>{favorites.length}</span>}
             </Link>
 
             {/* Cart */}
-            <button
-              className={styles.iconBtn}
-              onClick={() => setCartOpen(true)}
-              aria-label="Panier"
-            >
+            <button className={styles.iconBtn} onClick={() => setCartOpen(true)} aria-label="Panier">
               <ShoppingBag size={19} />
               {count > 0 && <span className={styles.cartBadge}>{count}</span>}
             </button>
 
-            {/* Messages */}
-            <Link
-              href="/messages"
-              className={`${styles.iconBtn} ${styles.hideMobileSm}`}
-              aria-label="Mes messages"
-            >
+            {/* Messages desktop */}
+            <Link href="/messages" className={`${styles.iconBtn} ${styles.hideMobileSm}`} aria-label="Mes messages">
               <MessageSquare size={19} />
             </Link>
 
             {/* Compte */}
-            <div
-              className={styles.navItem}
-              onMouseEnter={() => setOpenMenu("user")}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
+            <div className={styles.navItem} onMouseEnter={() => setOpenMenu("user")} onMouseLeave={() => setOpenMenu(null)}>
               <Link href={user ? "/profile" : "/auth/login"} className={styles.iconBtn} aria-label="Mon compte">
                 <User size={19} />
               </Link>
@@ -203,16 +170,10 @@ export default function Header() {
                     </div>
                     <div className={styles.userMenuLinks}>
                       {user.role === "ADMIN" && (
-                        <Link href="/admin" className={styles.userMenuLink}>
-                          <Shield size={16} /> Administration
-                        </Link>
+                        <Link href="/admin" className={styles.userMenuLink}><Shield size={16} /> Administration</Link>
                       )}
-                      <Link href="/profile/settings" className={styles.userMenuLink}>
-                        <Settings size={16} /> Paramètres du profil
-                      </Link>
-                      <button onClick={logout} className={`${styles.userMenuLink} ${styles.logoutBtn}`}>
-                        <LogOut size={16} /> Déconnexion
-                      </button>
+                      <Link href="/profile/settings" className={styles.userMenuLink}><Settings size={16} /> Paramètres du profil</Link>
+                      <button onClick={logout} className={`${styles.userMenuLink} ${styles.logoutBtn}`}><LogOut size={16} /> Déconnexion</button>
                     </div>
                   </motion.div>
                 )}
@@ -257,34 +218,38 @@ export default function Header() {
             exit={{ opacity: 0, y: -10, transition: { duration: 0.15 } }}
           >
             <nav className={styles.mobileNav} aria-label="Navigation mobile">
-              <Link href="/boutique" className={`${styles.mobileLink} ${pathname.startsWith("/boutique") ? styles.mobileActive : ""}`}>
-                Boutique
-              </Link>
+              <Link href="/" className={`${styles.mobileLink} ${pathname === "/" ? styles.mobileActive : ""}`}>Accueil</Link>
+              <Link href="/boutique" className={`${styles.mobileLink} ${pathname.startsWith("/boutique") ? styles.mobileActive : ""}`}>Boutique</Link>
               {BOUTIQUE_ITEMS.map(i => (
                 <Link key={i.href} href={i.href} className={styles.mobileSublink}>
                   <i.icon size={16} /> {i.label}
                 </Link>
               ))}
-              <Link href="/contact" className={`${styles.mobileLink} ${pathname === "/contact" ? styles.mobileActive : ""}`}>
-                Contact
-              </Link>
-              {user ? (
-                <>
-                  <Link href="/profile" className={`${styles.mobileLink} ${pathname.startsWith("/profile") ? styles.mobileActive : ""}`}>
-                    Mon profil
-                  </Link>
-                  {user.role === "ADMIN" && (
-                    <Link href="/admin" className={`${styles.mobileLink} ${pathname.startsWith("/admin") ? styles.mobileActive : ""}`}>
-                      Administration
+              <Link href="/a-propos" className={`${styles.mobileLink} ${pathname === "/a-propos" ? styles.mobileActive : ""}`}>À propos</Link>
+              <Link href="/contact" className={`${styles.mobileLink} ${pathname === "/contact" ? styles.mobileActive : ""}`}>Contact</Link>
+
+              <div style={{ borderTop: "1px solid hsl(var(--border) / 0.5)", margin: "1rem 0 0.5rem", paddingTop: "1rem" }}>
+                {user ? (
+                  <>
+                    <Link href="/profile" className={`${styles.mobileLink} ${pathname.startsWith("/profile") ? styles.mobileActive : ""}`}>
+                      <User size={16} /> Mon compte
                     </Link>
-                  )}
-                  <button onClick={logout} className={styles.mobileLogout}>
-                    <LogOut size={16} /> Déconnexion
-                  </button>
-                </>
-              ) : (
-                <Link href="/auth/login" className={styles.mobileLink}>Se connecter</Link>
-              )}
+                    <Link href="/favoris" className={`${styles.mobileLink} ${pathname === "/favoris" ? styles.mobileActive : ""}`}>
+                      <Heart size={16} /> Mes favoris
+                    </Link>
+                    {user.role === "ADMIN" && (
+                      <Link href="/admin" className={`${styles.mobileLink} ${pathname.startsWith("/admin") ? styles.mobileActive : ""}`}>
+                        <Shield size={16} /> Administration
+                      </Link>
+                    )}
+                    <button onClick={logout} className={styles.mobileLogout}>
+                      <LogOut size={16} /> Déconnexion
+                    </button>
+                  </>
+                ) : (
+                  <Link href="/auth/login" className={styles.mobileLink}><User size={16} /> Se connecter / Créer un compte</Link>
+                )}
+              </div>
             </nav>
           </motion.div>
         )}
