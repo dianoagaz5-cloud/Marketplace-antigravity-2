@@ -15,6 +15,8 @@ const inp: React.CSSProperties = {
 
 export default function RegisterPage() {
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { register } = useAuth();
   const router = useRouter();
 
@@ -25,18 +27,25 @@ export default function RegisterPage() {
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    register({
+    setError("");
+    setLoading(true);
+    const success = await register({
       name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
       password: formData.password,
     });
+    setLoading(false);
+    if (!success) {
+      setError("Impossible de créer le compte. Veuillez réessayer.");
+      return;
+    }
     router.push("/");
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", background: "linear-gradient(135deg, hsl(258 72% 97%), hsl(var(--background)))" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", background: "hsl(var(--background))" }}>
       <div style={{ width: "100%", maxWidth: "460px" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.625rem", textDecoration: "none" }}>
@@ -48,6 +57,12 @@ export default function RegisterPage() {
         </div>
 
         <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius-xl)", padding: "2rem", boxShadow: "var(--shadow-md)" }}>
+          {error && (
+            <div style={{ marginBottom: "1.25rem", padding: "0.75rem", background: "hsl(var(--danger) / 0.1)", borderRadius: "var(--radius)", border: "1px solid hsl(var(--danger) / 0.2)", color: "hsl(var(--danger))", fontSize: "0.85rem", fontWeight: 600 }}>
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
               <div>
@@ -68,7 +83,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: "1.75rem" }}>
               <label style={{ display: "block", fontSize: "0.875rem", fontWeight: 600, marginBottom: "0.5rem" }}>Mot de passe</label>
               <div style={{ position: "relative" }}>
-                <input type={show ? "text" : "password"} placeholder="Min. 8 caractères" required style={{ ...inp, paddingRight: "3rem" }} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
+                <input type={show ? "text" : "password"} placeholder="Min. 8 caractères" required style={{ ...inp, paddingRight: "3rem" }} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} autoComplete="new-password" />
                 <button type="button" onClick={() => setShow(v => !v)} style={{ position: "absolute", right: "0.875rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "hsl(var(--muted-foreground))", display: "flex", padding: 0 }}>
                   {show ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -81,8 +96,8 @@ export default function RegisterPage() {
               <Link href="/confidentialite" style={{ color: "hsl(var(--primary))" }}>politique de confidentialité</Link>.
             </p>
 
-            <button type="submit" style={{ width: "100%", padding: "0.9rem", borderRadius: "var(--radius-full)", background: "hsl(var(--primary))", color: "white", fontWeight: 700, fontSize: "0.975rem", border: "none", cursor: "pointer", boxShadow: "0 4px 16px hsl(var(--primary) / 0.35)", fontFamily: "inherit" }}>
-              Créer mon compte
+            <button type="submit" disabled={loading} style={{ width: "100%", padding: "0.9rem", borderRadius: "var(--radius-full)", background: "hsl(var(--primary))", color: "white", fontWeight: 700, fontSize: "0.975rem", border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, boxShadow: "0 4px 16px hsl(var(--primary) / 0.35)", fontFamily: "inherit" }}>
+              {loading ? "Création..." : "Créer mon compte"}
             </button>
           </form>
 

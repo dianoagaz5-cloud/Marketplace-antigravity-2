@@ -158,3 +158,13 @@ button:active, a:active {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 100px; }
 ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+
+/* Hide native browser password reveal button */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none;
+}
