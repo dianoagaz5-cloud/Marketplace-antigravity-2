@@ -59,45 +59,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const mapSupabaseUser = async (supabaseUser: SupabaseUser) => {
     const email = supabaseUser.email || "";
     const isAdmin = email === ADMIN_EMAIL;
+    const name = supabaseUser.user_metadata?.name || email.split("@")[0];
 
-    // Check if user exists in our users table, if not create it
-    const { data: existingUser } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", email)
-      .single();
+    // Always set user from Supabase Auth data first (works even if users table fails)
+    setUser({
+      id: supabaseUser.id,
+      name: name,
+      email: email,
+      role: isAdmin ? "ADMIN" : "CUSTOMER",
+      avatar: supabaseUser.user_metadata?.avatar_url || "",
+    });
 
-    if (!existingUser) {
-      // Create user in database
-      const { data: newUser } = await supabase
+    // Try to sync with users table (best effort — may fail due to RLS)
+    try {
+      const { data: existingUser } = await supabase
         .from("users")
-        .insert({
+        .select("*")
+        .eq("email", email)
+        .maybeSingle();
+
+      if (!existingUser) {
+        await supabase.from("users").insert({
           id: supabaseUser.id,
           email: email,
-          name: supabaseUser.user_metadata?.name || email.split("@")[0],
+          name: name,
           role: isAdmin ? "ADMIN" : "CUSTOMER",
           avatar: supabaseUser.user_metadata?.avatar_url || "",
-        })
-        .select()
-        .single();
-
-      if (newUser) {
-        setUser({
-          id: newUser.id,
-          name: newUser.name || "",
-          email: newUser.email,
-          role: newUser.role as "CUSTOMER" | "ADMIN",
-          avatar: newUser.avatar || "",
         });
       }
-    } else {
-      setUser({
-        id: existingUser.id,
-        name: existingUser.name || "",
-        email: existingUser.email,
-        role: existingUser.role as "CUSTOMER" | "ADMIN",
-        avatar: existingUser.avatar || "",
-      });
+    } catch (e) {
+      console.log("Users table sync skipped:", e);
     }
   };
 
@@ -108,11 +99,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
 
-      if (error) {
+      if (error || !data.user) {
         console.error("Login error:", error);
         return false;
       }
 
+      await mapSupabaseUser(data.user);
       return true;
     } catch (error) {
       console.error("Login error:", error);
@@ -132,11 +124,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       });
 
-      if (error) {
+      if (error || !authData.user) {
         console.error("Register error:", error);
         return false;
       }
 
+      await mapSupabaseUser(authData.user);
       return true;
     } catch (error) {
       console.error("Register error:", error);
